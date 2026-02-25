@@ -223,4 +223,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
+## 🏗️ Architecture
+
+![AWS Architecture Diagram](aws-architecture.png)
+
 **Built with ❤️ using modern web technologies**
