@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow Pro - Advanced Task Management</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-tasks"></i>
+                    <span>TaskFlow Pro</span>
+                </div>
+            </div>
+            
+            <div class="nav-menu">
+                <div class="nav-item active" data-view="dashboard">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item" data-view="tasks">
+                    <i class="fas fa-list-check"></i>
+                    <span>Tasks</span>
+                </div>
+                <div class="nav-item" data-view="projects">
+                    <i class="fas fa-folder-open"></i>
+                    <span>Projects</span>
+                </div>
+                <div class="nav-item" data-view="calendar">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Calendar</span>
+                </div>
+                <div class="nav-item" data-view="analytics">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                    <span>Dark Mode</span>
+                    <label class="switch">
+                        <input type="checkbox" id="themeToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Dashboard View -->
+            <div class="view active" id="dashboard-view">
+                <header class="view-header">
+                    <h1>Dashboard</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" id="quickAddBtn">
+                            <i class="fas fa-plus"></i> Quick Add
+                        </button>
+                    </div>
+                </header>
+                
+                <div class="dashboard-grid">
+                    <div class="stats-cards">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="totalTasksCount">0</h3>
+                                <p>Total Tasks</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon completed">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="completedTasksCount">0</h3>
+                                <p>Completed</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon pending">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="pendingTasksCount">0</h3>
+                                <p>Pending</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon overdue">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="overdueTasksCount">0</h3>
+                                <p>Overdue</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <h3>Productivity Overview</h3>
+                        <canvas id="productivityChart"></canvas>
+                    </div>
+                    
+                    <div class="recent-tasks">
+                        <h3>Recent Tasks</h3>
+                        <div id="recentTasksList"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasks View -->
+            <div class="view" id="tasks-view">
+                <header class="view-header">
+                    <h1>Tasks</h1>
+                    <div class="header-actions">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchInput" placeholder="Search tasks...">
+                        </div>
+                        <select id="sortSelect">
+                            <option value="created">Sort by Created</option>
+                            <option value="priority">Sort by Priority</option>
+                            <option value="dueDate">Sort by Due Date</option>
+                            <option value="alphabetical">Sort Alphabetically</option>
+                        </select>
+                        <button class="btn btn-primary" id="addTaskBtn">
+                            <i class="fas fa-plus"></i> Add Task
+                        </button>
+                    </div>
+                </header>
+                
+                <div class="filters-bar">
+                    <div class="filter-group">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="pending">Pending</button>
+                        <button class="filter-btn" data-filter="completed">Completed</button>
+                        <button class="filter-btn" data-filter="overdue">Overdue</button>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <button class="priority-filter active" data-priority="all">All Priorities</button>
+                        <button class="priority-filter high" data-priority="high">High</button>
+                        <button class="priority-filter medium" data-priority="medium">Medium</button>
+                        <button class="priority-filter low" data-priority="low">Low</button>
+                    </div>
+                </div>
+                
+                <div class="tasks-container">
+                    <div id="tasksList" class="tasks-list"></div>
+                </div>
+            </div>
+
+            <!-- Projects View -->
+            <div class="view" id="projects-view">
+                <header class="view-header">
+                    <h1>Projects</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" id="addProjectBtn">
+                            <i class="fas fa-plus"></i> New Project
+                        </button>
+                    </div>
+                </header>
+                
+                <div class="projects-grid" id="projectsGrid">
+                    <!-- Projects will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Calendar View -->
+            <div class="view" id="calendar-view">
+                <header class="view-header">
+                    <h1>Calendar</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" id="prevMonth">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span id="currentMonth"></span>
+                        <button class="btn btn-secondary" id="nextMonth">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </header>
+                
+                <div class="calendar-container">
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Calendar will be rendered here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics View -->
+            <div class="view" id="analytics-view">
+                <header class="view-header">
+                    <h1>Analytics</h1>
+                    <div class="header-actions">
+                        <select id="analyticsTimeframe">
+                            <option value="week">This Week</option>
+                            <option value="month">This Month</option>
+                            <option value="quarter">This Quarter</option>
+                            <option value="year">This Year</option>
+                        </select>
+                    </div>
+                </header>
+                
+                <div class="analytics-grid">
+                    <div class="chart-card">
+                        <h3>Task Completion Trend</h3>
+                        <canvas id="completionChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <h3>Priority Distribution</h3>
+                        <canvas id="priorityChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <h3>Project Progress</h3>
+                        <canvas id="projectChart"></canvas>
+                    </div>
+                    
+                    <div class="insights-card">
+                        <h3>Insights</h3>
+                        <div id="insightsList"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Task Modal -->
+    <div class="modal" id="taskModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Task</h2>
+                <button class="close-btn" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="taskForm" class="modal-body">
+                <div class="form-group">
+                    <label for="taskTitle">Task Title *</label>
+                    <input type="text" id="taskTitle" required maxlength="100">
+                </div>
+                
+                <div class="form-group">
+                    <label for="taskDescription">Description</label>
+                    <textarea id="taskDescription" rows="3" maxlength="500"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="taskPriority">Priority</label>
+                        <select id="taskPriority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="taskProject">Project</label>
+                        <select id="taskProject">
+                            <option value="">No Project</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="taskDueDate">Due Date</label>
+                        <input type="date" id="taskDueDate">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="taskEstimate">Time Estimate (hours)</label>
+                        <input type="number" id="taskEstimate" min="0.5" max="100" step="0.5">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="taskTags">Tags (comma separated)</label>
+                    <input type="text" id="taskTags" placeholder="e.g., urgent, meeting, development">
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelTask">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveTask">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Project Modal -->
+    <div class="modal" id="projectModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="projectModalTitle">Create New Project</h2>
+                <button class="close-btn" id="closeProjectModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="projectForm" class="modal-body">
+                <div class="form-group">
+                    <label for="projectName">Project Name *</label>
+                    <input type="text" id="projectName" required maxlength="50">
+                </div>
+                
+                <div class="form-group">
+                    <label for="projectDescription">Description</label>
+                    <textarea id="projectDescription" rows="3" maxlength="300"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="projectColor">Color</label>
+                        <input type="color" id="projectColor" value="#667eea">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="projectDeadline">Deadline</label>
+                        <input type="date" id="projectDeadline">
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelProject">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveProject">Save Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notifications" class="notifications-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
